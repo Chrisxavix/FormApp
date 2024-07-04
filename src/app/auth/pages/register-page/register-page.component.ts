@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { cantBeStrider } from '../../../shared/validators/validators';
+import { ValidatorsService } from '../../../shared/service/validators.service';
 
 @Component({
   selector: 'app-register-page',
@@ -10,29 +10,27 @@ import { cantBeStrider } from '../../../shared/validators/validators';
 export class RegisterPageComponent {
 
   constructor(
-    private fb: FormBuilder
-  ) {
-
-  }
+    private fb: FormBuilder,
+    private validatorsService: ValidatorsService,
+  ) { }
 
   /* si es síncrono se manda en el mismo array:
     username: ["", [Validators.required, cantBeStrider]],
   */
   public myForm: FormGroup = this.fb.group({
-    name: ["", [Validators.required]],
-    email: ["", [Validators.required]],
-    username: ["", [Validators.required, cantBeStrider]],
+    name: ["", [Validators.required, Validators.pattern(this.validatorsService.firstNameAndLastnamePattern)]],
+    email: ["", [Validators.required, Validators.email, Validators.pattern(this.validatorsService.emailPattern)]],
+    username: ["", [Validators.required, this.validatorsService.cantBeStrider]],
     password: ["", [Validators.required, Validators.minLength(6)]],
     password2: ["", [Validators.required]],
   })
 
   onSubmit(): void {
-    if(this.myForm.invalid) {
-      console.log("Form inválido");
-      this.myForm.markAllAsTouched();
-      return;
-    }
-    console.log("Form inválido", this.myForm.value);
+    this.myForm.markAllAsTouched();
+    this.myForm.markAllAsTouched();
   }
 
+  isValidField(field: string) {
+    return this.validatorsService.isValidField(this.myForm, field);
+  }
 }
