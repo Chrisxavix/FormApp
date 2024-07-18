@@ -26,7 +26,11 @@ export class RegisterPageComponent {
     username: ["", [Validators.required, this.validatorsService.cantBeStrider]],
     password: ["", [Validators.required, Validators.minLength(6)]],
     password2: ["", [Validators.required]],
-  })
+  }, {
+    validators: [
+      this.validatorsService.isFieldOneEqualFielTwo("password", "password2"),
+    ]
+  });
 
   onSubmit(): void {
     this.myForm.markAllAsTouched();
@@ -36,4 +40,5 @@ export class RegisterPageComponent {
   isValidField(field: string) {
     return this.validatorsService.isValidField(this.myForm, field);
   }
+
 }
